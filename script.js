@@ -1,7 +1,6 @@
 const yesBtn = document.getElementById("yesBtn");
 const noBtn = document.getElementById("noBtn");
 const body = document.body;
-const clouds = document.getElementById("clouds");
 const thunderSound = document.getElementById("thunderSound");
 const thunderLeft = document.getElementById("thunderLeft");
 const thunderMid = document.getElementById("thunderMid");
@@ -11,7 +10,7 @@ const thunderRight = document.getElementById("thunderRight");
 /* YES HEARTS NEAR HER HEAD */
 yesBtn.addEventListener("mouseover", () => {
 
-  yesBtn.innerText = "PRESS YESS FASTTT 💖";
+  yesBtn.innerText = "PRESS HERE FASTTT 💖";
 
   for (let i = 0; i < 5; i++) {
     const heart = document.createElement("div");
@@ -27,7 +26,7 @@ yesBtn.addEventListener("mouseover", () => {
 });
 
 yesBtn.addEventListener("mouseout", () => {
-  yesBtn.innerText = "YES 💖";
+  yesBtn.innerText = "COME BACK !! press me 🥺";
 });
 
 /* NO BUTTON EFFECTS */
@@ -56,37 +55,5 @@ noBtn.addEventListener("mouseover", () => {
 
 noBtn.addEventListener("mouseout", () => {
   body.classList.remove("dim");
-  noBtn.innerText = "NO 😢";
-
-  if (clouds) clouds.innerHTML = "";
+  noBtn.innerText = "DON'T COME NEAR ME 😢";
 });
-
-/* CLOUDS */
-function createClouds() {
-  if (!clouds) return;
-
-  clouds.innerHTML = "";
-
-  for (let i = 0; i < 4; i++) {
-    const cloud = document.createElement("div");
-    cloud.className = "cloud";
-    cloud.innerText = "☁️";
-    cloud.style.top = Math.random()*80 + "%";
-    cloud.style.left = (i%2===0 ? "-200px" : "100%");
-    clouds.appendChild(cloud);
-  }
-}
-
-/* THUNDER FLASH */
-function thunder() {
-  document.body.classList.add("flash");
-
-  if (thunderSound) {
-    thunderSound.currentTime = 0;
-    thunderSound.play().catch(() => {});
-  }
-
-  setTimeout(() => {
-    document.body.classList.remove("flash");
-  }, 300);
-}
