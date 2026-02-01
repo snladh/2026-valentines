@@ -4,17 +4,26 @@ body {
   background: url("IMG_7368.JPG") no-repeat center center/cover;
   height: 100vh;
   color: white;
-  text-align: center;
 }
 
+/* Container */
 .container {
-  background: rgba(0,0,0,0.4);
   height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
+  position: relative;
 }
 
+/* Top Right Box */
+.top-right {
+  position: absolute;
+  top: 40px;
+  right: 40px;
+  text-align: right;
+  background: rgba(0,0,0,0.35);
+  padding: 20px;
+  border-radius: 15px;
+}
+
+/* Buttons */
 button {
   padding: 15px 25px;
   font-size: 18px;
@@ -22,6 +31,7 @@ button {
   border: none;
   margin: 10px;
   cursor: pointer;
+  transition: 0.3s;
 }
 
 #yesBtn {
@@ -30,4 +40,21 @@ button {
 
 #noBtn {
   background: gray;
+}
+
+/* Screen Dim Effect */
+.dim {
+  filter: grayscale(80%) brightness(60%);
+}
+
+/* Floating Hearts */
+.heart {
+  position: absolute;
+  font-size: 22px;
+  animation: floatUp 1.5s ease-out forwards;
+}
+
+@keyframes floatUp {
+  0% { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-80px); }
 }
