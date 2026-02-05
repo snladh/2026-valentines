@@ -39,27 +39,76 @@
       background: #333;
     }
 
-    a {
-      text-decoration: none;
+    /* Game modal */
+    #gameWrapper {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.85);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #gameWrapper iframe {
+      border: none;
+      border-radius: 20px;
+      width: 900px;
+      height: 500px;
+      background: black;
+    }
+
+    #closeBtn {
+      position: absolute;
+      top: 20px;
+      right: 30px;
+      background: none;
       color: white;
+      font-size: 32px;
+      border: none;
+      cursor: pointer;
+    }
+
+    #closeBtn:hover {
+      color: #ff4d6d;
     }
   </style>
 </head>
 
-<body>>
+<body>
+
   <h1>Dear Bebu,</h1>
   <h1>Welcome to the Gift Center 🎁</h1>
 
   <div class="grid">
+    <div class="card">🐱 Cat Corner</div>
+    <div class="card">🎥 Memories Video</div>
+    <div class="card">🧩 Crossword Puzzle</div>
 
-    <a href="#"><div class="card">🐱 Cat Corner</div></a>
-    <a href="#"><div class="card">🎥 Memories Video</div></a>
-    <a href="#"><div class="card">🧩 Crossword Puzzle</div></a>
-    <a href="#"><div class="card">🏃 Mini Game</div></a>
-    <a href="#"><div class="card">🔐 Secret Room</div></a>
-    <a href="#"><div class="card">🎲 Lottery</div></a>
+    <!-- MINI GAME -->
+    <div class="card" onclick="openGame()">
+      ⏳❤️ A minute to Stop Sunil
+    </div>
 
+    <div class="card">🔐 Secret Room</div>
+    <div class="card">🎲 Lottery</div>
   </div>
+
+  <!-- GAME MODAL -->
+  <div id="gameWrapper">
+    <button id="closeBtn" onclick="closeGame()">×</button>
+    <iframe src="aashma-runner.html"></iframe>
+  </div>
+
+  <script>
+    function openGame() {
+      document.getElementById("gameWrapper").style.display = "flex";
+    }
+
+    function closeGame() {
+      document.getElementById("gameWrapper").style.display = "none";
+    }
+  </script>
 
 </body>
 </html>

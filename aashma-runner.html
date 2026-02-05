@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Stop Sunil 💖</title>
+
+<style>
+html,body{
+  margin:0;
+  padding:0;
+  background:#0b0b0b;
+  overflow:hidden;
+  font-family:Arial,sans-serif;
+  color:white;
+}
+canvas{
+  display:block;
+  margin:auto;
+  background:linear-gradient(#1a1a2e,#16213e);
+}
+
+/* OVERLAYS */
+.overlay{
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,.8);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+}
+.hidden{display:none}
+button{
+  margin-top:22px;
+  padding:12px 28px;
+  font-size:18px;
+  border-radius:30px;
+  border:none;
+  cursor:pointer;
+  background:#ff4d6d;
+  color:white;
+}
+
+/* CINEMA */
+#cinemaInner{
+  position:relative;
+  max-width:90vw;
+  max-height:90vh;
+}
+#cinemaImg{
+  max-width:90vw;
+  max-height:75vh;
+  object-fit:contain;
+  border-radius:20px;
+  display:block;
+}
+#cinemaText{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  padding:18px 22px;
+  font-size:22px;
+  line-height:1.4;
+  background:linear-gradient(transparent, rgba(0,0,0,0.75));
+  border-radius:0 0 20px 20px;
+}
+.fade{
+  animation:fadeIn 1.5s ease forwards;
+}
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="game" width="900" height="500"></canvas>
+
+<!-- START -->
+<div id="startScreen" class="overlay">
+  <div>
+    <p>Sunil is about to leave for the airport.</p>
+    <p>He has a meeting with Vlad.</p>
+    <p>You have <b>1 minute</b> to stop him.</p>
+    <p style="color:#ffb3c6">Follow your heart ❤️</p>
+    <button onclick="startGame()">Press SPACE to Run</button>
+  </div>
+</div>
+
+<!-- LOSE -->
+<div id="loseScreen" class="overlay hidden">
+  <div>
+    <h2>You were too late…</h2>
+    <p>He had to leave 💔</p>
+    <button onclick="location.reload()">Try Again</button>
+  </div>
+</div>
+
+<!-- CINEMATIC -->
+<div id="cinema" class="overlay hidden">
+  <div id="cinemaInner">
+    <img id="cinemaImg">
+    <div id="cinemaText"></div>
+  </div>
+</div>
+
+<script>
+/* ========== CONFIG ========== */
+const GAME_TIME_SECONDS = 60;
+const SCENE_DURATION = 5500;
+const GIFT_IMAGE_URL = "gift.jpg";
+
+const CINEMA_SCENES = [
+  {
+    img:"aashma.jpg",
+    text:"<b>Aashma:</b> Sunil… don’t go.<br>I love you.<br>I want us to stay together."
+  },
+  {
+    img:"sunil.jpg",
+    text:"<b>Sunil:</b> You came all this way for me, Bebu…<br>I’ll cancel my meeting.<br>I’ll stay with you."
+  },
+  {
+    img:"kiss.jpg",
+    text:"They stayed together.<br><b>Happily ever after 💞</b>"
+  },
+  {
+    img:"kiss.jpg",
+    text:
+      "Because you followed your heart…<br>" +
+      "Your king has a gift for you 💖<br>" +
+      "<button onclick=\"openGift()\">🎁 Click here to get your gift</button>"
+  }
+];
+
+/* ========== GAME ========== */
+const canvas=document.getElementById("game");
+const ctx=canvas.getContext("2d");
+
+let gameState="start";
+let timer=GAME_TIME_SECONDS;
+let frame=0;
+let reunion=false;
+let sceneIndex=0;
+
+const player={x:120,y:360,vy:0,grounded:true};
+const sunil={x:700,y:360};
+const gravity=0.8, jumpForce=-14;
+
+let obstacles=[];
+
+/* INPUT */
+document.addEventListener("keydown",e=>{
+ if(e.code==="Space"){
+   if(gameState==="start") startGame();
+   else if(gameState==="play" && player.grounded){
+     player.vy=jumpForce;
+     player.grounded=false;
+   }
+ }
+});
+
+function startGame(){
+ document.getElementById("startScreen").classList.add("hidden");
+ gameState="play";
+}
+
+/* UPDATE */
+function update(){
+ if(gameState!=="play") return;
+
+ frame++;
+ if(frame%60===0) timer--;
+
+ if(timer<=0){
+   startReunion();
+ }
+
+ // physics
+ player.vy+=gravity;
+ player.y+=player.vy;
+ if(player.y>=360){
+   player.y=360;
+   player.vy=0;
+   player.grounded=true;
+ }
+
+ // spawn boulders
+ if(frame%120===0){
+   obstacles.push({x:canvas.width+40,y:388,w:18,h:24});
+ }
+
+ // move boulders
+ obstacles.forEach(o=>o.x-=4);
+ obstacles=obstacles.filter(o=>o.x>-50);
+
+ // collision
+ obstacles.forEach(o=>{
+   if(player.x<o.x+o.w &&
+      player.x+30>o.x &&
+      player.y<o.y+o.h &&
+      player.y+60>o.y){
+     lose();
+   }
+ });
+}
+
+/* DRAW CHARACTERS */
+function drawGirl(x,y){
+ // hair
+ ctx.fillStyle="#d6336c";
+ ctx.beginPath();
+ ctx.arc(x+15,y-12,9,Math.PI,Math.PI*2);
+ ctx.fill();
+
+ // head
+ ctx.fillStyle="#ffccd5";
+ ctx.beginPath();
+ ctx.arc(x+15,y-12,10,0,Math.PI*2);
+ ctx.fill();
+
+ // dress
+ ctx.fillStyle="#ff6b9c";
+ ctx.beginPath();
+ ctx.moveTo(x+15,y+5);
+ ctx.lineTo(x-2,y+45);
+ ctx.lineTo(x+32,y+45);
+ ctx.closePath();
+ ctx.fill();
+
+ // legs
+ ctx.strokeStyle="#ffccd5";
+ ctx.beginPath();
+ ctx.moveTo(x+8,y+45);
+ ctx.lineTo(x+8,y+60);
+ ctx.moveTo(x+22,y+45);
+ ctx.lineTo(x+22,y+60);
+ ctx.stroke();
+
+ // name
+ ctx.fillStyle="white";
+ ctx.font="14px Arial";
+ ctx.fillText("Aashma",x-4,y-32);
+}
+
+function drawGuy(x,y){
+ ctx.fillStyle="#cce3ff";
+ ctx.beginPath();
+ ctx.arc(x+15,y-12,10,0,Math.PI*2);
+ ctx.fill();
+
+ ctx.fillStyle="#1c7ed6";
+ ctx.fillRect(x+5,y-24,20,6);
+
+ ctx.fillStyle="#4dabf7";
+ ctx.fillRect(x+6,y,18,18);
+
+ ctx.fillStyle="#1c3d5a";
+ ctx.fillRect(x+6,y+18,7,22);
+ ctx.fillRect(x+17,y+18,7,22);
+
+ ctx.fillStyle="white";
+ ctx.font="14px Arial";
+ ctx.fillText("Sunil",x,y-32);
+}
+
+/* DRAW */
+function draw(){
+ ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ // ground
+ ctx.fillStyle="#222";
+ ctx.fillRect(0,400,canvas.width,100);
+
+ // player
+ drawGirl(player.x,player.y);
+
+ // obstacles
+ ctx.fillStyle="#555";
+ obstacles.forEach(o=>{
+   ctx.beginPath();
+   ctx.arc(o.x,o.y+18,18,0,Math.PI*2);
+   ctx.fill();
+ });
+
+ // sunil
+ if(reunion){
+   drawGuy(sunil.x,sunil.y);
+ }
+
+ // timer
+ ctx.fillStyle="white";
+ ctx.font="16px Arial";
+ ctx.fillText(`Time: ${timer}s`,20,30);
+}
+
+/* LOOP */
+function loop(){
+ update();
+ draw();
+ requestAnimationFrame(loop);
+}
+loop();
+
+/* ENDING */
+function lose(){
+ gameState="lose";
+ document.getElementById("loseScreen").classList.remove("hidden");
+}
+
+function startReunion(){
+ if(gameState!=="play") return;
+ gameState="cinema";
+ reunion=true;
+
+ const run=setInterval(()=>{
+   if(player.x<sunil.x-50){
+     player.x+=3;
+   }else{
+     clearInterval(run);
+     setTimeout(startCinema,1200);
+   }
+ },30);
+}
+
+function startCinema(){
+ document.getElementById("cinema").classList.remove("hidden");
+ playScene();
+}
+
+function playScene(){
+ if(sceneIndex>=CINEMA_SCENES.length) return;
+
+ const s=CINEMA_SCENES[sceneIndex];
+ const img=document.getElementById("cinemaImg");
+ const txt=document.getElementById("cinemaText");
+
+ img.src=s.img;
+ txt.innerHTML=s.text;
+
+ img.className="fade";
+ txt.className="fade";
+
+ sceneIndex++;
+ setTimeout(playScene,SCENE_DURATION);
+}
+
+function openGift(){
+ window.open(GIFT_IMAGE_URL,"_blank");
+}
+</script>
+
+</body>
+</html>
