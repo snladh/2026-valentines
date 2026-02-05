@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>Your Prize 🎁</title>
+  <style>
+    body{
+      margin:0;
+      background:#0b0b0b;
+      font-family:Arial,sans-serif;
+      color:white;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      min-height:100vh;
+      overflow:auto;
+    }
+    #backBtn{
+      position:fixed;
+      top:16px;
+      left:16px;
+      padding:10px 18px;
+      border-radius:20px;
+      border:none;
+      background:rgba(0,0,0,0.7);
+      color:white;
+      cursor:pointer;
+      z-index:999;
+    }
+    .wrap{
+      width:min(1100px, 92vw);
+      padding:70px 16px 24px;
+      box-sizing:border-box;
+      text-align:center;
+    }
+    img{
+      width:100%;
+      height:auto;
+      border-radius:18px;
+      box-shadow:0 14px 40px rgba(0,0,0,0.6);
+    }
+  </style>
+</head>
+<body>
+  <button id="backBtn" onclick="location.href='crossword.html'">← Back</button>
+
+  <div class="wrap">
+    <img src="gift2.JPG" alt="Gift">
+  </div>
+</body>
+</html>
