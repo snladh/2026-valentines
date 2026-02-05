@@ -1,43 +1,69 @@
 body {
   margin: 0;
   font-family: 'Trebuchet MS', sans-serif;
-  background: url("IMG_7368.JPG") no-repeat center center/cover;
+  background: url("aashma_snow.png") no-repeat center center / cover;
   height: 100vh;
   color: white;
   overflow: hidden;
 }
 
+/* TEXT BLOCK – TOP LEFT */
+.top-text {
+  position: absolute;
+  top: 60px;
+  left: 80px;
+  text-align: left;
+  color: white;
+}
+
 /* Titles */
 .title {
-  font-size: 48px;
-  margin: 0 0 10px 0;
+  font-size: 56px;
+  margin: 0 0 12px 0;
+  display: inline-block;
+  padding: 8px 16px;
+  background: rgba(0, 0, 0, 0.35);
+  backdrop-filter: blur(3px);
+  border-radius: 12px;  
+}
+
+.question-strip {
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(3px);
+  padding: 14px 20px;
+  border-radius: 12px;
+  display: block;
+  margin-bottom: 16px;
+}
+
+.question-strip h2 {
+  font-size: 34px;
+  margin: 0;
 }
 
 /* Buttons */
 .buttons {
   display: flex;
-  justify-content: flex-end;
-  gap: 12px;
+  gap: 14px;
 }
-
 
 button {
-  font-size: 18px;
-  padding: 8px 18px;
-  border-radius: 8px;
+  font-size: 20px;
+  padding: 10px 22px;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
 }
-
-
 
 #yesBtn { background: pink; }
 #noBtn { background: gray; }
 
-/* DIM WHOLE PAGE */
+/* DIM EFFECT */
 .dim {
   filter: grayscale(90%) brightness(50%);
 }
 
-/* HEART */
+/* HEARTS */
 .heart {
   position: absolute;
   font-size: 40px;
@@ -49,41 +75,7 @@ button {
   100% { opacity: 0; transform: translateY(-120px); }
 }
 
-/* CLOUD LAYER */
-#clouds {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  background: transparent;
-  transition: background 0.5s;
-}
-
-.cloud {
-  position: absolute;
-  width: 300px;
-  opacity: 0.6;
-  animation: slideCloud 2s forwards;
-}
-
-@keyframes slideCloud {
-  from { transform: translateX(-400px); }
-  to { transform: translateX(0); }
-}
-
-/* Thunder Flash */
-.flash {
-  animation: thunderFlash 0.3s;
-}
-
-@keyframes thunderFlash {
-  0% { background: rgba(255,255,255,0); }
-  50% { background: rgba(255,255,255,0.8); }
-  100% { background: rgba(255,255,255,0); }
-}
-
+/* THUNDER */
 .thunder {
   position: fixed;
   top: 0;
@@ -107,43 +99,11 @@ button {
   100% { background: rgba(255,255,255,0); }
 }
 
+/* COPYRIGHT – subtle bottom-right */
 .copyright {
   position: fixed;
   bottom: 10px;
   right: 15px;
-  font-size: 14px;
-  color: rgba(255,255,255,0.7);
-  background: rgba(0,0,0,0.3);
-  padding: 5px 10px;
-  border-radius: 8px;
-  backdrop-filter: blur(3px);
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.6);
 }
-
-.subtitle {
-  margin: 0;
-  font-size: 28px;
-  color: white;
-}
-
-.top-text {
-  position: absolute;
-  top: 60px;
-  right: 120px;
-  text-align: right;
-  color: white;
-}
-
-.question-strip {
-  background: rgba(0,0,0,0.25);
-  backdrop-filter: blur(3px);
-  padding: 10px 16px;
-  border-radius: 10px;
-  display: inline-block;
-  margin-bottom: 12px;
-}
-
-.question-strip h2 {
-  font-size: 30px;
-  margin: 0;
-}
-

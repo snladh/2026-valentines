@@ -6,10 +6,8 @@ const thunderLeft = document.getElementById("thunderLeft");
 const thunderMid = document.getElementById("thunderMid");
 const thunderRight = document.getElementById("thunderRight");
 
-
-/* YES HEARTS NEAR HER HEAD */
+/* YES HEARTS */
 yesBtn.addEventListener("mouseover", () => {
-
   yesBtn.innerText = "PRESS HERE FASTTT 💖";
 
   for (let i = 0; i < 5; i++) {
@@ -17,8 +15,8 @@ yesBtn.addEventListener("mouseover", () => {
     heart.innerText = "💖";
     heart.className = "heart";
 
-    heart.style.left = (window.innerWidth * 0.35 + Math.random()*60) + "px";
-    heart.style.top = (window.innerHeight * 0.35) + "px";
+    heart.style.left = (window.innerWidth * 0.25 + Math.random() * 80) + "px";
+    heart.style.top = (window.innerHeight * 0.25) + "px";
 
     document.body.appendChild(heart);
     setTimeout(() => heart.remove(), 2000);
@@ -29,7 +27,7 @@ yesBtn.addEventListener("mouseout", () => {
   yesBtn.innerText = "COME BACK !! press me 🥺";
 });
 
-/* NO BUTTON EFFECTS */
+/* NO BUTTON EFFECT */
 noBtn.addEventListener("mouseover", () => {
   body.classList.add("dim");
   noBtn.innerText = "NO 😭";
@@ -40,10 +38,8 @@ noBtn.addEventListener("mouseover", () => {
 
   body.classList.add("flashWhite");
 
-  if (thunderSound) {
-    thunderSound.currentTime = 0;
-    thunderSound.play().catch(()=>{});
-  }
+  thunderSound.currentTime = 0;
+  thunderSound.play().catch(() => {});
 
   setTimeout(() => {
     thunderLeft.style.display = "none";
