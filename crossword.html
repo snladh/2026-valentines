@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Quiz on your Boyfriend</title>
+
+<style>
+  body{margin:0;font-family:Arial,sans-serif;background:#0e0e0e;color:#fff}
+  #backBtn{
+    position:fixed;top:16px;left:16px;padding:10px 18px;border-radius:20px;
+    border:none;background:rgba(0,0,0,.7);color:#fff;cursor:pointer;z-index:999
+  }
+  .wrap{display:flex;gap:24px;height:100vh;padding:70px 24px 24px;box-sizing:border-box}
+  .board{
+    flex:1;background:rgba(255,255,255,.05);border-radius:18px;padding:20px;
+    display:flex;flex-direction:column;align-items:center
+  }
+  .grid{display:grid;grid-template-columns:repeat(12,34px);gap:2px}
+  .cell{width:34px;height:34px;background:rgba(255,255,255,.08);border-radius:6px;position:relative}
+  .cell.empty{background:transparent}
+  .cell input{
+    width:100%;height:100%;border:none;outline:none;background:transparent;color:#fff;
+    text-align:center;font-size:16px;font-weight:700;text-transform:uppercase
+  }
+  .cell.correct{background:rgba(80,200,120,.25)}
+  .cell.incorrect{background:rgba(255,80,80,.25)}
+  .cell-number{position:absolute;top:2px;left:4px;font-size:10px;opacity:.7}
+
+  .panel{width:360px;background:rgba(255,255,255,.05);border-radius:18px;padding:20px;overflow:auto}
+  .hint{background:rgba(0,0,0,.4);border-radius:14px;padding:12px;margin-bottom:12px;font-size:14px}
+  #giftBox{display:none;margin-top:16px;padding:16px;border-radius:16px;background:rgba(80,200,120,.2)}
+</style>
+</head>
+
+<body>
+<button id="backBtn" onclick="location.href='gamehub.html'">← Back</button>
+
+<div class="wrap">
+  <div class="board">
+    <h2>Quiz on your Boyfriend</h2>
+    <div id="grid" class="grid"></div>
+  </div>
+
+  <div class="panel">
+    <h3>Hints 💡</h3>
+    <div class="hint"><b>1 (H).</b> Place we had our first kiss (6)</div>
+    <div class="hint"><b>2 (V).</b> Name of thulo diju (6)</div>
+    <div class="hint"><b>3 (V).</b> Color of tshirt when you first saw me (5)</div>
+    <div class="hint"><b>4 (V).</b> Your emergency contact number (10)</div>
+    <div class="hint"><b>5 (H).</b> Which month did we start our house work (8)</div>
+    <div class="hint"><b>6 (V).</b> Name of muma (5)</div>
+    <div class="hint"><b>7 (H).</b> Month and year we met (10)</div>
+    <div class="hint"><b>8 (V).</b> My role model (7)</div>
+    <div class="hint"><b>9 (V).</b> My lucky number (5)</div>
+    <div class="hint"><b>10 (H).</b> A family member (4)</div>
+
+    <div id="giftBox">
+    <div style="font-size:20px; font-weight:700; margin-bottom:8px;">
+        🎉 Congratulations!!
+    </div>
+
+    <div style="font-size:16px; margin-bottom:16px;">
+        You got <b>everything</b> correct 💖<br>
+        You win a gift from your boyfriend.
+    </div>
+
+    <button
+        style="padding:10px 18px; border-radius:18px; border:none; cursor:pointer;"
+        onclick="window.open('gift2.html','_blank')"
+    >
+        Click here to claim 💝
+    </button>
+
+    <br><br>
+
+    <button onclick="location.href='gamehub.html'">
+        Back to Gift Center
+    </button>
+    </div>
+
+<script>
+  // GRID SIZE (matches your layout)
+  const ROWS = 17;  // 0..16
+  const COLS = 12;  // 0..11
+
+  const solutions = new Map();
+
+  function set(r,c,ch){ solutions.set(`${r},${c}`, ch); }
+
+  // ===== EXACT PLACEMENTS FROM YOUR GRID =====
+
+  // 4) 3347340712 vertical on far right (col 11), rows 0..9
+  "3347340712".split("").forEach((ch,i)=> set(i, 9, ch));
+
+  // 3) BLACK vertical at col 0, rows 3..7  (B L A C K)
+  "BLACK".split("").forEach((ch,i)=> set(3+i, 0, ch));
+
+  // 2) SUJANA vertical at col 1, rows 4..9  (S U J A N A)
+  "SUJANA".split("").forEach((ch,i)=> set(4+i, 1, ch));
+
+  // 7) AUGUST2024 horizontal at row 5, col 0..9
+  // shares A with BLACK at (5,0) exactly
+  "AUGUST2024".split("").forEach((ch,i)=> set(5, 0+i, ch));
+
+  // 6) TULSI vertical at col 5, rows 5..9 (T U L S I)
+  "TULSI".split("").forEach((ch,i)=> set(5+i, 5, ch));
+
+  // 10) LUNA horizontal at row 6, col 6..9 (does NOT touch TULSI col 5)
+  "LUNA".split("").forEach((ch,i)=> set(6, 4+i, ch));
+
+  // 8) RONALDO vertical at col 2, rows 8..14
+  "RONALDO".split("").forEach((ch,i)=> set(8+i, 2, ch));
+
+  // 1) AUBURN horizontal at row 11, col 2..7 (crosses RONALDO at A)
+  "AUBURN".split("").forEach((ch,i)=> set(11, 2+i, ch));
+
+  // 5) DECEMBER horizontal at row 13, col 2..9 (crosses RONALDO at D)
+  "DECEMBER".split("").forEach((ch,i)=> set(13, 2+i, ch));
+
+  // 9) SEVEN vertical at col 3, rows 12..16
+  "SEVEN".split("").forEach((ch,i)=> set(12+i, 3, ch));
+
+  // ===== NUMBER LABELS (start cell of each word) =====
+  const numbers = {
+    "11,2": 1,  // AUBURN
+    "4,1":  2,  // SUJANA
+    "3,0":  3,  // BLACK
+    "0,9":  4,  // 3347340712
+    "13,2": 5,  // DECEMBER
+    "5,5":  6,  // TULSI
+    "5,0":  7,  // AUGUST2024
+    "8,2":  8,  // RONALDO
+    "12,3": 9,  // SEVEN
+    "6,4":  10  // LUNA
+  };
+
+  // ===== RENDER =====
+  const grid = document.getElementById("grid");
+  const inputs = [];
+
+  for(let r=0;r<ROWS;r++){
+    for(let c=0;c<COLS;c++){
+      const key = `${r},${c}`;
+      const cell = document.createElement("div");
+      cell.className = "cell" + (solutions.has(key) ? "" : " empty");
+
+      if(solutions.has(key)){
+        if(numbers[key]){
+          const n = document.createElement("div");
+          n.className = "cell-number";
+          n.textContent = numbers[key];
+          cell.appendChild(n);
+        }
+
+        const input = document.createElement("input");
+        input.maxLength = 1;
+
+        const sol = solutions.get(key);
+        const isDigitCell = /[0-9]/.test(sol);
+
+        input.inputMode = isDigitCell ? "numeric" : "text";
+
+        input.oninput = () => {
+          let v = (input.value || "").toUpperCase().slice(0,1);
+
+          // keep digit cells clean
+          if(isDigitCell && v && !/[0-9]/.test(v)) v = "";
+          if(!isDigitCell && v && /[0-9]/.test(v)) v = "";
+
+          input.value = v;
+
+          cell.classList.toggle("correct", v === sol);
+          cell.classList.toggle("incorrect", v && v !== sol);
+
+          if(inputs.every(i => i.input.value === i.solution)){
+            document.getElementById("giftBox").style.display = "block";
+          }
+        };
+
+        cell.appendChild(input);
+        inputs.push({input, solution: sol});
+      }
+
+      grid.appendChild(cell);
+    }
+  }
+</script>
+</body>
+</html>

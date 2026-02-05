@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Cat Corner 🐱</title>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #0e0e0e;
+      color: white;
+      overflow-y: auto;
+    }
+
+    /* BACK BUTTON */
+    #backBtn {
+      position: fixed;
+      top: 16px;
+      left: 16px;
+      padding: 10px 18px;
+      font-size: 14px;
+      border-radius: 20px;
+      border: none;
+      cursor: pointer;
+      background: rgba(0,0,0,0.7);
+      color: white;
+      z-index: 1000;
+    }
+
+    #backBtn:hover {
+      background: rgba(255,255,255,0.15);
+    }
+
+    h1 {
+      margin-top: 80px;
+      text-align: center;
+      font-size: 36px;
+    }
+
+    /* GALLERY */
+    .gallery {
+      width: 90%;
+      max-width: 900px;
+      margin: 40px auto;
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
+    .gallery img {
+      width: 100%;
+      border-radius: 20px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+      transition: transform 0.3s;
+    }
+
+    .gallery img:hover {
+      transform: scale(1.02);
+    }
+  </style>
+</head>
+
+<body>
+
+  <button id="backBtn" onclick="goBack()">← Back</button>
+
+  <h1>🐱 Cat Corner</h1>
+
+  <div class="gallery">
+    <img src="IMG_4047.png" alt="Cat Pic 1">
+    <img src="IMG_7362.JPG" alt="Cat Pic 2">
+    <img src="IMG_7368.png" alt="Cat Pic 3">
+  </div>
+
+  <script>
+    function goBack() {
+      window.location.href = "gamehub.html";
+    }
+  </script>
+
+</body>
+</html>

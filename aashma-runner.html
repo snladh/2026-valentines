@@ -130,7 +130,9 @@ const CINEMA_SCENES = [
     text:
       "Because you followed your heart…<br>" +
       "Your king has a gift for you 💖<br>" +
-      "<button onclick=\"openGift()\">🎁 Click here to get your gift</button>"
+      "<button onclick='window.open(\"gift.html\", \"_blank\")'>" +
+      "🎁 Click here to get your gift" +
+      "</button>"
   }
 ];
 
@@ -346,9 +348,6 @@ function playScene(){
  setTimeout(playScene,SCENE_DURATION);
 }
 
-function openGift(){
- window.open(GIFT_IMAGE_URL,"_blank");
-}
 </script>
 
 </body>

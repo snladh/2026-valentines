@@ -7,39 +7,84 @@
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background: #111;
       color: white;
       text-align: center;
+      background: url("gamehub.png") no-repeat center center fixed;
+      background-size: cover;
+      height: 100vh;
+      overflow: hidden;
     }
 
     h1 {
       margin-top: 40px;
       font-size: 42px;
+      text-shadow: 0 4px 10px rgba(0,0,0,0.7);
     }
 
+    /* ===== CAT CORNER ===== */
+    #catCorner {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 150px;
+      height: 150px;
+      background: url("cat_corner.jpg") center/cover no-repeat;
+      border-radius: 0 0 0 70px;
+      cursor: pointer;
+      box-shadow: -6px 6px 20px rgba(0,0,0,0.6);
+      transition: transform 0.2s;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+    }
+
+    #catCorner:hover {
+      transform: scale(1.05);
+    }
+
+    #catCorner span {
+      font-size: 12px;
+      background: rgba(0,0,0,0.55);
+      padding: 4px 8px;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+
+    /* ===== GRID ===== */
     .grid {
       display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 20px;
-      width: 70%;
-      margin: 40px auto;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 25px;
+      width: 55%;
+      margin: 60px auto;
     }
 
     .card {
-      background: #222;
-      padding: 30px;
-      border-radius: 12px;
-      font-size: 20px;
+      background: rgba(0,0,0,0.6);
+      padding: 28px;
+      border-radius: 16px;
+      font-size: 22px;
       cursor: pointer;
       transition: transform 0.2s, background 0.2s;
+      backdrop-filter: blur(6px);
     }
 
     .card:hover {
       transform: scale(1.05);
-      background: #333;
+      background: rgba(0,0,0,0.8);
     }
 
-    /* Game modal */
+    .locked {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .locked:hover {
+      transform: none;
+      background: rgba(0,0,0,0.6);
+    }
+
+    /* ===== MODAL ===== */
     #gameWrapper {
       display: none;
       position: fixed;
@@ -72,41 +117,79 @@
     #closeBtn:hover {
       color: #ff4d6d;
     }
+
+    /* ===== COPYRIGHT ===== */
+    #copyright {
+      position: absolute;
+      bottom: 12px;
+      right: 16px;
+      font-size: 12px;
+      opacity: 0.7;
+    }
   </style>
 </head>
 
 <body>
 
+  <!-- CAT CORNER -->
+  <div id="catCorner" onclick="openCatCorner()">
+    <span>Cat Corner</span>
+  </div>
+
   <h1>Dear Bebu,</h1>
   <h1>Welcome to the Gift Center 🎁</h1>
 
   <div class="grid">
-    <div class="card">🐱 Cat Corner</div>
     <div class="card">🎥 Memories Video</div>
-    <div class="card">🧩 Crossword Puzzle</div>
+    <div class="card" onclick="window.location.href='crossword.html'">🧩 Crossword Puzzle</div>
 
-    <!-- MINI GAME -->
-    <div class="card" onclick="openGame()">
+
+    <div class="card" onclick="openGame('aashma-runner.html')">
       ⏳❤️ A minute to Stop Sunil
     </div>
 
-    <div class="card">🔐 Secret Room</div>
-    <div class="card">🎲 Lottery</div>
+    <div class="card" onclick="openGame('secret-room.html')">
+      🔐 Secret Room
+    </div>
+
+    <div class="card locked" onclick="unlockLottery()">
+      🎲 Lottery 🔒
+    </div>
   </div>
 
-  <!-- GAME MODAL -->
+  <!-- MODAL -->
   <div id="gameWrapper">
     <button id="closeBtn" onclick="closeGame()">×</button>
-    <iframe src="aashma-runner.html"></iframe>
+    <iframe id="gameFrame"></iframe>
   </div>
 
+  <!-- COPYRIGHT -->
+  <div id="copyright">© 2026 Thade Workshop</div>
+
   <script>
-    function openGame() {
+    function openGame(src) {
+      document.getElementById("gameFrame").src = src;
       document.getElementById("gameWrapper").style.display = "flex";
     }
 
     function closeGame() {
       document.getElementById("gameWrapper").style.display = "none";
+      document.getElementById("gameFrame").src = "";
+    }
+
+    function openCatCorner() {
+    window.location.href = "cat-corner.html";
+    }
+
+
+    function unlockLottery() {
+      const code = prompt("Enter the secret passcode 🔑");
+      if (code === "LOVE2024") {
+        alert("🎉 Lottery unlocked!");
+        openGame("lottery.html");
+      } else {
+        alert("❌ Wrong code");
+      }
     }
   </script>
 
