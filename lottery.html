@@ -193,7 +193,7 @@ function startSpinning(){
   spinning = true;
 
   spinSound.currentTime = 0;
-  spinSound.play();
+  spinSound.play().catch(()=>{});
 
   spinInterval = setInterval(()=>{
     slot1.src = randomSymbol();
@@ -214,7 +214,7 @@ function activateButton(){
   stopBtn.className="active";
 
   if(!romanticStarted){
-    romanticSound.play();
+    romanticSound.play().catch(()=>{});
     romanticStarted = true;
   }
 }
@@ -271,7 +271,7 @@ stopBtn.onclick=function(){
   stopSpinning();
 
   stopSound.currentTime = 0;
-  stopSound.play();
+  stopSound.play().catch(()=>{});
 
   if(state==="bonus"){
     slot1.src=scriptedResults.bonus[0];
@@ -279,7 +279,7 @@ stopBtn.onclick=function(){
     slot3.src=scriptedResults.bonus[2];
 
     winSound.currentTime = 0;
-    winSound.play();
+    winSound.play().catch(()=>{});
 
     document.getElementById("message").innerText=
     "Winner 💖 You won the lottery.\nThe prize is your loving and caring boyfriend for lifetime.";
@@ -299,8 +299,7 @@ stopBtn.onclick=function(){
 };
 
 /* START */
-startSpinning();      // spin immediately
-activateButton();     // button activates after load
+startSpinning();
 setTimeout(()=>activateButton(),2000);
 
 </script>
