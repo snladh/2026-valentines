@@ -1,355 +1,308 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Stop Sunil 💖</title>
+<title>Lucky Love Lottery 🎰</title>
 
 <style>
-html,body{
+body{
   margin:0;
-  padding:0;
-  background:#0b0b0b;
-  overflow:hidden;
-  font-family:Arial,sans-serif;
+  font-family:Arial, sans-serif;
+  background:radial-gradient(circle,#3a004d,#000);
   color:white;
-}
-canvas{
-  display:block;
-  margin:auto;
-  background:linear-gradient(#1a1a2e,#16213e);
+  text-align:center;
+  overflow:hidden;
 }
 
-/* OVERLAYS */
-.overlay{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,.8);
+h1{
+  margin-top:30px;
+  font-size:38px;
+}
+
+.slot-container{
+  display:flex;
+  justify-content:center;
+  gap:40px;
+  margin-top:120px;
+}
+
+.slot{
+  width:170px;
+  height:170px;
+  background:rgba(255,255,255,0.08);
+  border-radius:20px;
   display:flex;
   align-items:center;
   justify-content:center;
-  text-align:center;
 }
-.hidden{display:none}
-button{
-  margin-top:22px;
-  padding:12px 28px;
+
+.slot img{
+  width:140px;
+}
+
+#attempt{
+  margin-top:40px;
   font-size:18px;
-  border-radius:30px;
+  opacity:0.8;
+}
+
+button{
+  padding:12px 30px;
+  font-size:18px;
   border:none;
+  border-radius:12px;
+  margin-top:20px;
   cursor:pointer;
+}
+
+.active{
   background:#ff4d6d;
   color:white;
 }
 
-/* CINEMA */
-#cinemaInner{
-  position:relative;
-  max-width:90vw;
-  max-height:90vh;
+.inactive{
+  background:#552233;
+  color:#aaa;
+  cursor:not-allowed;
 }
-#cinemaImg{
-  max-width:90vw;
-  max-height:75vh;
-  object-fit:contain;
-  border-radius:20px;
-  display:block;
+
+#message{
+  margin-top:20px;
+  font-size:20px;
+  min-height:60px;
+  white-space:pre-line;
 }
-#cinemaText{
+
+#bonusBox{
   position:absolute;
-  bottom:0;
-  width:100%;
-  padding:18px 22px;
+  top:15%;
+  left:50%;
+  transform:translateX(-50%);
+  background:rgba(0,0,0,0.85);
+  padding:30px 40px;
+  border-radius:20px;
+  border:2px solid #ff4d6d;
+  width:60%;
+  display:none;
   font-size:22px;
-  line-height:1.4;
-  background:linear-gradient(transparent, rgba(0,0,0,0.75));
-  border-radius:0 0 20px 20px;
+  line-height:1.6;
+  white-space:pre-line;
 }
-.fade{
-  animation:fadeIn 1.5s ease forwards;
+
+#revealBtn{
+  margin-top:20px;
+  display:none;
+  background:#ff4d6d;
+  color:white;
 }
-@keyframes fadeIn{
-  from{opacity:0}
-  to{opacity:1}
+
+#closeBtn{
+  position:absolute;
+  top:20px;
+  right:30px;
+  background:none;
+  border:none;
+  font-size:28px;
+  color:white;
+  cursor:pointer;
 }
 </style>
 </head>
-
 <body>
 
-<canvas id="game" width="900" height="500"></canvas>
+<button id="closeBtn">×</button>
 
-<!-- START -->
-<div id="startScreen" class="overlay">
-  <div>
-    <p>Sunil is about to leave for the airport.</p>
-    <p>He has a meeting with Vlad.</p>
-    <p>You have <b>1 minute</b> to stop him.</p>
-    <p style="color:#ffb3c6">Dear Aashma, stop your Bebu.</p>
-    <button onclick="startGame()">Press SPACE to Run</button>
-  </div>
+<h1>Lucky Love Lottery 🎰</h1>
+
+<div id="bonusBox"></div>
+
+<div class="slot-container">
+  <div class="slot"><img id="slot1"></div>
+  <div class="slot"><img id="slot2"></div>
+  <div class="slot"><img id="slot3"></div>
 </div>
 
-<!-- LOSE -->
-<div id="loseScreen" class="overlay hidden">
-  <div>
-    <h2>You were too late…</h2>
-    <p>He had to leave 💔</p>
-    <button onclick="location.reload()">Try Again</button>
-  </div>
-</div>
+<div id="attempt">Attempt 1 / 3</div>
 
-<!-- CINEMATIC -->
-<div id="cinema" class="overlay hidden">
-  <div id="cinemaInner">
-    <img id="cinemaImg">
-    <div id="cinemaText"></div>
-  </div>
-</div>
+<button id="stopBtn" class="inactive" disabled>Stop</button>
+
+<div id="message"></div>
+
+<button id="revealBtn">Reveal Your Gift 💄</button>
+
+<!-- AUDIO -->
+<audio id="romanticSound" src="romantic.wav" loop></audio>
+<audio id="spinSound" src="spin.wav" loop></audio>
+<audio id="stopSound" src="stop.wav"></audio>
+<audio id="winSound" src="win.wav"></audio>
 
 <script>
-/* ========== CONFIG ========== */
-const GAME_TIME_SECONDS = 60;
-const SCENE_DURATION = 5500;
-const GIFT_IMAGE_URL = "starbucks.jpg";
 
-const CINEMA_SCENES = [
-  {
-    img:"aashma.jpg",
-    text:"<b>Aashma:</b> Mayaa… please don’t go.<br>I love you.<br>I want us to stay together."
-  },
-  {
-    img:"sunil.jpg",
-    text:"<b>Sunil:</b> You came all this way for me, Bebu…<br>I’ll cancel my meeting.<br>I’ll stay with you."
-  },
-  {
-    img:"kiss.jpg",
-    text:"They stayed together.<br><b>Happily ever after 💞</b>"
-  },
-  {
-    img:"kiss.jpg",
-    text:
-      "Because you followed your heart…<br>" +
-      "Your king has a gift for you 💖<br>" +
-      "<button onclick='window.open(\"gift.html\", \"_blank\")'>" +
-      "Click here to get your gift" +
-      "</button>"
+document.getElementById("closeBtn").onclick = function(){
+  if(window.parent && window.parent.closeGame){
+    window.parent.closeGame();
+  } else {
+    window.history.back();
   }
+};
+
+document.getElementById("revealBtn").onclick = function(){
+  window.open("https://eGft.in/p~eHfO0iGRXWSCq","_blank");
+};
+
+const symbols = [
+"heart.png",
+"spade.png",
+"diamond.png",
+"star.png",
+"ring.png",
+"crown.png"
 ];
 
-/* ========== GAME ========== */
-const canvas=document.getElementById("game");
-const ctx=canvas.getContext("2d");
+const scriptedResults = {
+1:["spade.png","ring.png","diamond.png"],
+2:["ring.png","star.png","crown.png"],
+3:["heart.png","ring.png","star.png"],
+bonus:["heart.png","heart.png","heart.png"]
+};
 
-let gameState="start";
-let timer=GAME_TIME_SECONDS;
-let frame=0;
-let reunion=false;
-let sceneIndex=0;
+let attempt = 1;
+let spinning = false;
+let spinInterval;
+let state = "normal";
+let romanticStarted = false;
 
-const player={x:120,y:360,vy:0,grounded:true};
-const sunil={x:700,y:360};
-const gravity=0.8, jumpForce=-14;
+const slot1 = document.getElementById("slot1");
+const slot2 = document.getElementById("slot2");
+const slot3 = document.getElementById("slot3");
+const stopBtn = document.getElementById("stopBtn");
+const bonusBox = document.getElementById("bonusBox");
+const revealBtn = document.getElementById("revealBtn");
 
-let obstacles=[];
+const romanticSound = document.getElementById("romanticSound");
+const spinSound = document.getElementById("spinSound");
+const stopSound = document.getElementById("stopSound");
+const winSound = document.getElementById("winSound");
 
-/* INPUT */
-document.addEventListener("keydown",e=>{
- if(e.code==="Space"){
-   if(gameState==="start") startGame();
-   else if(gameState==="play" && player.grounded){
-     player.vy=jumpForce;
-     player.grounded=false;
-   }
- }
-});
+romanticSound.volume = 0.15;
 
-function startGame(){
- document.getElementById("startScreen").classList.add("hidden");
- gameState="play";
+function randomSymbol(){
+  return symbols[Math.floor(Math.random()*symbols.length)];
 }
 
-/* UPDATE */
-function update(){
- if(gameState!=="play") return;
+function startSpinning(){
+  spinning = true;
 
- frame++;
- if(frame%60===0) timer--;
+  spinSound.currentTime = 0;
+  spinSound.play();
 
- if(timer<=0){
-   startReunion();
- }
-
- // physics
- player.vy+=gravity;
- player.y+=player.vy;
- if(player.y>=360){
-   player.y=360;
-   player.vy=0;
-   player.grounded=true;
- }
-
- // spawn boulders
- if(frame%120===0){
-   obstacles.push({x:canvas.width+40,y:388,w:18,h:24});
- }
-
- // move boulders
- obstacles.forEach(o=>o.x-=4);
- obstacles=obstacles.filter(o=>o.x>-50);
-
- // collision
- obstacles.forEach(o=>{
-   if(player.x<o.x+o.w &&
-      player.x+30>o.x &&
-      player.y<o.y+o.h &&
-      player.y+60>o.y){
-     lose();
-   }
- });
+  spinInterval = setInterval(()=>{
+    slot1.src = randomSymbol();
+    slot2.src = randomSymbol();
+    slot3.src = randomSymbol();
+  },100);
 }
 
-/* DRAW CHARACTERS */
-function drawGirl(x,y){
- // hair
- ctx.fillStyle="#d6336c";
- ctx.beginPath();
- ctx.arc(x+15,y-12,9,Math.PI,Math.PI*2);
- ctx.fill();
-
- // head
- ctx.fillStyle="#ffccd5";
- ctx.beginPath();
- ctx.arc(x+15,y-12,10,0,Math.PI*2);
- ctx.fill();
-
- // dress
- ctx.fillStyle="#ff6b9c";
- ctx.beginPath();
- ctx.moveTo(x+15,y+5);
- ctx.lineTo(x-2,y+45);
- ctx.lineTo(x+32,y+45);
- ctx.closePath();
- ctx.fill();
-
- // legs
- ctx.strokeStyle="#ffccd5";
- ctx.beginPath();
- ctx.moveTo(x+8,y+45);
- ctx.lineTo(x+8,y+60);
- ctx.moveTo(x+22,y+45);
- ctx.lineTo(x+22,y+60);
- ctx.stroke();
-
- // name
- ctx.fillStyle="white";
- ctx.font="14px Arial";
- ctx.fillText("Aashma",x-4,y-32);
+function stopSpinning(){
+  clearInterval(spinInterval);
+  spinning = false;
+  spinSound.pause();
+  spinSound.currentTime = 0;
 }
 
-function drawGuy(x,y){
- ctx.fillStyle="#cce3ff";
- ctx.beginPath();
- ctx.arc(x+15,y-12,10,0,Math.PI*2);
- ctx.fill();
+function activateButton(){
+  stopBtn.disabled = false;
+  stopBtn.className="active";
 
- ctx.fillStyle="#1c7ed6";
- ctx.fillRect(x+5,y-24,20,6);
-
- ctx.fillStyle="#4dabf7";
- ctx.fillRect(x+6,y,18,18);
-
- ctx.fillStyle="#1c3d5a";
- ctx.fillRect(x+6,y+18,7,22);
- ctx.fillRect(x+17,y+18,7,22);
-
- ctx.fillStyle="white";
- ctx.font="14px Arial";
- ctx.fillText("Sunil",x,y-32);
+  if(!romanticStarted){
+    romanticSound.play();
+    romanticStarted = true;
+  }
 }
 
-/* DRAW */
-function draw(){
- ctx.clearRect(0,0,canvas.width,canvas.height);
-
- // ground
- ctx.fillStyle="#222";
- ctx.fillRect(0,400,canvas.width,100);
-
- // player
- drawGirl(player.x,player.y);
-
- // obstacles
- ctx.fillStyle="#555";
- obstacles.forEach(o=>{
-   ctx.beginPath();
-   ctx.arc(o.x,o.y+18,18,0,Math.PI*2);
-   ctx.fill();
- });
-
- // sunil
- if(reunion){
-   drawGuy(sunil.x,sunil.y);
- }
-
- // timer
- ctx.fillStyle="white";
- ctx.font="16px Arial";
- ctx.fillText(`Time: ${timer}s`,20,30);
+function deactivateButton(){
+  stopBtn.disabled = true;
+  stopBtn.className="inactive";
 }
 
-/* LOOP */
-function loop(){
- update();
- draw();
- requestAnimationFrame(loop);
-}
-loop();
+function nextAttemptFlow(){
+  attempt++;
 
-/* ENDING */
-function lose(){
- gameState="lose";
- document.getElementById("loseScreen").classList.remove("hidden");
-}
+  if(attempt<=3){
+    document.getElementById("attempt").innerText="Attempt "+attempt+" / 3";
 
-function startReunion(){
- if(gameState!=="play") return;
- gameState="cinema";
- reunion=true;
-
- const run=setInterval(()=>{
-   if(player.x<sunil.x-50){
-     player.x+=3;
-   }else{
-     clearInterval(run);
-     setTimeout(startCinema,1200);
-   }
- },30);
+    setTimeout(()=>{
+      startSpinning();
+      setTimeout(()=>activateButton(),2000);
+    },2000);
+  }
+  else{
+    showBonusFlow();
+  }
 }
 
-function startCinema(){
- document.getElementById("cinema").classList.remove("hidden");
- playScene();
+function showBonusFlow(){
+
+  bonusBox.style.display="block";
+  bonusBox.innerText="Attempts over. Please try again tomorrow.";
+
+  setTimeout(()=>{
+    bonusBox.innerText=
+    "But you have been such a nice, caring and loving girlfriend...\nYou deserve all the love and happiness";
+  },12000);
+
+  setTimeout(()=>{
+    bonusBox.innerText="Here is a bonus attempt";
+  },19000);
+
+  setTimeout(()=>{
+    bonusBox.style.display="none";
+    document.getElementById("attempt").innerText="Attempt: Love / Everything";
+    state="bonus";
+    startSpinning();
+    setTimeout(()=>activateButton(),2000);
+  },24000);
 }
 
-function playScene(){
- if(sceneIndex>=CINEMA_SCENES.length) return;
+stopBtn.onclick=function(){
 
- const s=CINEMA_SCENES[sceneIndex];
- const img=document.getElementById("cinemaImg");
- const txt=document.getElementById("cinemaText");
+  if(!spinning) return;
 
- img.src=s.img;
- txt.innerHTML=s.text;
+  deactivateButton();
+  stopSpinning();
 
- img.className="fade";
- txt.className="fade";
+  stopSound.currentTime = 0;
+  stopSound.play();
 
- sceneIndex++;
- setTimeout(playScene,SCENE_DURATION);
-}
+  if(state==="bonus"){
+    slot1.src=scriptedResults.bonus[0];
+    slot2.src=scriptedResults.bonus[1];
+    slot3.src=scriptedResults.bonus[2];
+
+    winSound.currentTime = 0;
+    winSound.play();
+
+    document.getElementById("message").innerText=
+    "Winner 💖 You won the lottery.\nThe prize is your loving and caring boyfriend for lifetime.";
+
+    setTimeout(()=>{
+      revealBtn.style.display="inline-block";
+    },5000);
+
+    return;
+  }
+
+  slot1.src=scriptedResults[attempt][0];
+  slot2.src=scriptedResults[attempt][1];
+  slot3.src=scriptedResults[attempt][2];
+
+  nextAttemptFlow();
+};
+
+/* START */
+startSpinning();      // spin immediately
+activateButton();     // button activates after load
+setTimeout(()=>activateButton(),2000);
 
 </script>
-
 </body>
 </html>
-
