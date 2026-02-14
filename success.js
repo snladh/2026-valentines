@@ -7,3 +7,4 @@ giftBtn.addEventListener("mouseover", () => {
 giftBtn.addEventListener("mouseout", () => {
   giftBtn.innerText = "Time to Reveal Your Gifts 🎁";
 });
+
