@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Lucky Love Lottery 🎰</title>
+<title>🎰 THADE WORKSHOP LOTTERY CORNER 🎰</title>
 
 <style>
 body{
@@ -35,7 +35,9 @@ h1{
   justify-content:center;
 }
 
-.slot img{ width:140px; }
+.slot img{
+  width:140px;
+}
 
 #attempt{
   margin-top:40px;
@@ -52,8 +54,16 @@ button{
   cursor:pointer;
 }
 
-.active{ background:#ff4d6d; color:white; }
-.inactive{ background:#552233; color:#aaa; cursor:not-allowed; }
+.active{
+  background:#ff4d6d;
+  color:white;
+}
+
+.inactive{
+  background:#552233;
+  color:#aaa;
+  cursor:not-allowed;
+}
 
 #message{
   margin-top:20px;
@@ -82,6 +92,12 @@ button{
   margin-top:20px;
   display:none;
   background:#ff4d6d;
+  color:white;
+}
+
+#backBtn{
+  margin-top:20px;
+  background:#444;
   color:white;
 }
 
@@ -117,17 +133,28 @@ button{
 
 <div id="message"></div>
 
-<button id="revealBtn">Reveal Your Sephora Gift Card 💄</button>
-  
+<button id="revealBtn">And a Gift from Him</button>
+
+<br>
+
+<button id="backBtn">⬅ Back to Gift Center</button>
+
+<!-- AUDIO -->
+<audio id="romanticSound" src="romantic.wav" loop></audio>
+<audio id="spinSound" src="spin.wav" loop></audio>
+<audio id="stopSound" src="stop.wav"></audio>
+<audio id="winSound" src="win.wav"></audio>
+
 <script>
 
-/* CLOSE BUTTON */
+/* CLOSE BUTTON — ALWAYS GO BACK */
 document.getElementById("closeBtn").onclick = function(){
-  if(window.parent && window.parent.closeGame){
-    window.parent.closeGame();
-  } else {
-    window.history.back();
-  }
+  window.location.href = "gamehub.html";
+};
+
+/* VISIBLE BACK BUTTON */
+document.getElementById("backBtn").onclick = function(){
+  window.location.href = "gamehub.html";
 };
 
 document.getElementById("revealBtn").onclick = function(){
@@ -154,6 +181,7 @@ let attempt = 1;
 let spinning = false;
 let spinInterval;
 let state = "normal";
+let romanticStarted = false;
 
 const slot1 = document.getElementById("slot1");
 const slot2 = document.getElementById("slot2");
@@ -162,12 +190,22 @@ const stopBtn = document.getElementById("stopBtn");
 const bonusBox = document.getElementById("bonusBox");
 const revealBtn = document.getElementById("revealBtn");
 
+const romanticSound = document.getElementById("romanticSound");
+const spinSound = document.getElementById("spinSound");
+const stopSound = document.getElementById("stopSound");
+const winSound = document.getElementById("winSound");
+
+romanticSound.volume = 0.15;
+
 function randomSymbol(){
   return symbols[Math.floor(Math.random()*symbols.length)];
 }
 
 function startSpinning(){
   spinning = true;
+
+  spinSound.currentTime = 0;
+  spinSound.play();
 
   spinInterval = setInterval(()=>{
     slot1.src = randomSymbol();
@@ -179,11 +217,18 @@ function startSpinning(){
 function stopSpinning(){
   clearInterval(spinInterval);
   spinning = false;
+  spinSound.pause();
+  spinSound.currentTime = 0;
 }
 
 function activateButton(){
   stopBtn.disabled = false;
   stopBtn.className="active";
+
+  if(!romanticStarted){
+    romanticSound.play();
+    romanticStarted = true;
+  }
 }
 
 function deactivateButton(){
@@ -237,10 +282,16 @@ stopBtn.onclick=function(){
   deactivateButton();
   stopSpinning();
 
+  stopSound.currentTime = 0;
+  stopSound.play();
+
   if(state==="bonus"){
     slot1.src=scriptedResults.bonus[0];
     slot2.src=scriptedResults.bonus[1];
     slot3.src=scriptedResults.bonus[2];
+
+    winSound.currentTime = 0;
+    winSound.play();
 
     document.getElementById("message").innerText=
     "Winner 💖 You won the lottery.\nThe prize is your loving and caring boyfriend for lifetime.";
