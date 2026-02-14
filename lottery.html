@@ -277,17 +277,16 @@ stopBtn.onclick=function(){
     slot1.src=scriptedResults.bonus[0];
     slot2.src=scriptedResults.bonus[1];
     slot3.src=scriptedResults.bonus[2];
-
-    winSound.currentTime = 0;
+  
     winSound.play().catch(()=>{});
-
+  
     document.getElementById("message").innerText=
     "Winner 💖 You won the lottery.\nThe prize is your loving and caring boyfriend for lifetime.";
-
+  
     setTimeout(()=>{
-      revealBtn.style.display="inline-block";
+      document.getElementById("revealBtn").style.display="inline-block";
     },5000);
-
+  
     return;
   }
 
