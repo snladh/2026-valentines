@@ -6,10 +6,10 @@
   <style>
     body {
       margin: 0;
-      font-family: Arial, sans-serif;
       background: #0e0e0e;
+      font-family: Arial, sans-serif;
       color: white;
-      overflow-y: auto;
+      overflow: hidden;
     }
 
     /* BACK BUTTON */
@@ -31,52 +31,119 @@
       background: rgba(255,255,255,0.15);
     }
 
-    h1 {
-      margin-top: 80px;
-      text-align: center;
-      font-size: 36px;
-    }
-
-    /* GALLERY */
-    .gallery {
-      width: 90%;
-      max-width: 900px;
-      margin: 40px auto;
-      display: flex;
-      flex-direction: column;
-      gap: 30px;
-    }
-
-    .gallery img {
+    /* SLIDESHOW CONTAINER */
+    .slideshow {
+      position: relative;
       width: 100%;
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.7);
-      transition: transform 0.3s;
+      height: 100vh;
     }
 
-    .gallery img:hover {
-      transform: scale(1.02);
+    .slide {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      opacity: 0;
+      transition: opacity 1s ease-in-out;
+    }
+
+    .slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #000;
+    }
+
+    .active {
+      opacity: 1;
+    }
+
+    /* TEXT OVERLAY */
+    .caption {
+      position: absolute;
+      bottom: 0;
+      width: 100%;
+      padding: 40px;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+      text-align: center;
+      font-size: 40px; /* Twice bigger */
+      font-weight: bold;
     }
   </style>
 </head>
 
 <body>
 
-  <button id="backBtn" onclick="goBack()">← Back</button>
+<button id="backBtn" onclick="goBack()">← Back</button>
 
-  <h1>🐱 Cat Corner</h1>
+<div class="slideshow" id="slideshow"></div>
 
-  <div class="gallery">
-    <img src="cat1.png" alt="Cat Pic 1">
-    <img src="IMG_7362.JPG" alt="Cat Pic 2">
-    <img src="IMG_7368.png" alt="Cat Pic 3">
-  </div>
+<script>
+  const slides = [
+    { img: "cat_1.jpg", text: "Sunil: A closed curtain!! Who is perfoming?" },
+    { img: "cat_2.jpg", text: "Meow... Is it time to perform? OHH? Not yet??" },
+    { img: "cat_3.jpg", text: "Sunil: Hello Aashma, luna wants to perform sth for you..." },
+    { img: "cat_4.jpg", text: "Helleow... laaj lagyo !!" },
+    { img: "cat_6.jpg", text: "Aashma didi... Helleow !!" },
+    { img: "cat_6.5.jpg", text: "Didi... Sunil taught me how to wink... can you wink?" },
+    { img: "aashma-wink.PNG", text: "Woohhh... you can." },
+    { img: "cat_7.jpg", text: "See!! I can too. Meow!" },
+    { img: "cat_8.jpg", text: "I know one more thing!!" },
+    { img: "cat_9.jpg", text: "I can touch my nose by tongue, can you?" },
+    { img: "aashma-try.PNG", text: "HUhhh.." },
+    { img: "cat_5.jpg", text: "Meowww!! What was that??"},
+    { img: "cat_10.jpg", text: "Hernus esari ho!"},
+    { img: "cat_11.jpg", text: "meww meowww..." },
+    { img: "cat_12.jpg", text: "I did better than you didi. Aba last perfomance." },
+    { img: "cat_13.jpg", text: "Is there anything on my hand?" },
+    { img: "cat_14.png", text: "Happy Valentines Day Aashma Didi... I love you!!"},
+    { img: "cat_15.png", text: "Ma Magician ho ni ta Didi"},
+    { img: "cat_laugh.jpg", text: "Heheheheheehh"},
+    { img: "cat_6.jpg", text: "Sakyo perfomance. Gako la, Byee..."},
+    { img: "end_show.jpg", text: "Sunil: Hope you enjoyed Bebu!!"}
+  ];
 
-  <script>
-    function goBack() {
-      window.location.href = "gamehub.html";
+  const slideshow = document.getElementById("slideshow");
+
+  slides.forEach((slide, index) => {
+    const slideDiv = document.createElement("div");
+    slideDiv.classList.add("slide");
+    if(index === 0) slideDiv.classList.add("active");
+
+    slideDiv.innerHTML = `
+      <img src="${slide.img}">
+      <div class="caption">${slide.text}</div>
+    `;
+
+    slideshow.appendChild(slideDiv);
+  });
+
+  let current = 0;
+  const slideElements = document.querySelectorAll(".slide");
+
+  const interval = setInterval(() => {
+
+    slideElements[current].classList.remove("active");
+
+    if (current === slideElements.length - 1) {
+      clearInterval(interval);
+
+      // Wait 4 seconds on last slide, then redirect
+      setTimeout(() => {
+        window.location.href = "gamehub.html";
+      }, 4000);
+
+      return;
     }
-  </script>
+
+    current++;
+    slideElements[current].classList.add("active");
+
+  }, 4000);
+
+  function goBack() {
+    window.location.href = "gamehub.html";
+  }
+</script>
 
 </body>
 </html>
