@@ -12,6 +12,30 @@
       overflow: hidden;
     }
 
+    /* START OVERLAY */
+    #startScreen {
+      position: fixed;
+      width: 100%;
+      height: 100vh;
+      background: #0e0e0e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      z-index: 2000;
+      cursor: pointer;
+    }
+
+    #startScreen h2 {
+      font-size: 36px;
+      margin-bottom: 20px;
+    }
+
+    #startScreen p {
+      font-size: 20px;
+      opacity: 0.7;
+    }
+
     /* BACK BUTTON */
     #backBtn {
       position: fixed;
@@ -31,7 +55,7 @@
       background: rgba(255,255,255,0.15);
     }
 
-    /* SLIDESHOW CONTAINER */
+    /* SLIDESHOW */
     .slideshow {
       position: relative;
       width: 100%;
@@ -57,7 +81,6 @@
       opacity: 1;
     }
 
-    /* TEXT OVERLAY */
     .caption {
       position: absolute;
       bottom: 0;
@@ -65,7 +88,7 @@
       padding: 40px;
       background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
       text-align: center;
-      font-size: 40px; /* Twice bigger */
+      font-size: 40px;
       font-weight: bold;
     }
   </style>
@@ -73,9 +96,15 @@
 
 <body>
 
+<div id="startScreen">
+  <h2>Click to Begin the Dedicated Perfomance</h2>
+</div>
+
 <button id="backBtn" onclick="goBack()">← Back</button>
 
 <div class="slideshow" id="slideshow"></div>
+
+<audio id="bgMusic" src="background_cat.mp3" loop></audio>
 
 <script>
   const slides = [
@@ -103,6 +132,10 @@
   ];
 
   const slideshow = document.getElementById("slideshow");
+  const bgMusic = document.getElementById("bgMusic");
+  const startScreen = document.getElementById("startScreen");
+
+  bgMusic.volume = 0.03;
 
   slides.forEach((slide, index) => {
     const slideDiv = document.createElement("div");
@@ -119,28 +152,45 @@
 
   let current = 0;
   const slideElements = document.querySelectorAll(".slide");
+  let interval;
 
-  const interval = setInterval(() => {
+  function startShow() {
+    bgMusic.play();
+    startScreen.style.display = "none";
 
-    slideElements[current].classList.remove("active");
+    interval = setInterval(() => {
 
-    if (current === slideElements.length - 1) {
-      clearInterval(interval);
+      slideElements[current].classList.remove("active");
 
-      // Wait 4 seconds on last slide, then redirect
-      setTimeout(() => {
-        window.location.href = "gamehub.html";
-      }, 4000);
+      if (current === slideElements.length - 1) {
+        clearInterval(interval);
 
-      return;
-    }
+        let fadeOut = setInterval(() => {
+          if (bgMusic.volume > 0.05) {
+            bgMusic.volume -= 0.05;
+          } else {
+            bgMusic.pause();
+            clearInterval(fadeOut);
+          }
+        }, 200);
 
-    current++;
-    slideElements[current].classList.add("active");
+        setTimeout(() => {
+          window.location.href = "gamehub.html";
+        }, 4000);
 
-  }, 4000);
+        return;
+      }
+
+      current++;
+      slideElements[current].classList.add("active");
+
+    }, 4000);
+  }
+
+  startScreen.addEventListener("click", startShow);
 
   function goBack() {
+    bgMusic.pause();
     window.location.href = "gamehub.html";
   }
 </script>

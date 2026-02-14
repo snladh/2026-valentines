@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta charset="UTF-8" />
   <title>Game Hub 🎮</title>
 
   <style>
@@ -50,41 +51,39 @@
       margin-bottom: 10px;
     }
 
-    /* ===== GRID ===== */
+    /* ===== BUTTON GRID (BOTTOM RIGHT POSITIONED) ===== */
+/* ===== BUTTON GRID (BOTTOM RIGHT POSITIONED) ===== */
     .grid {
+      position: absolute;
+      bottom: 80px;
+      right: 100px;
       display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 25px;
-      width: 55%;
-      margin: 60px auto;
+      grid-template-columns: repeat(2, 320px);
+      gap: 30px;
     }
 
     .card {
-      background: rgba(0,0,0,0.6);
-      padding: 28px;
-      border-radius: 16px;
-      font-size: 22px;
+      background: rgba(0,0,0,0.65);
+      padding: 40px 20px;
+      border-radius: 20px;
+      font-size: 26px;
       cursor: pointer;
       transition: transform 0.2s, background 0.2s;
       backdrop-filter: blur(6px);
+      text-align: center;
     }
+
 
     .card:hover {
       transform: scale(1.05);
-      background: rgba(0,0,0,0.8);
+      background: rgba(0,0,0,0.85);
     }
 
     .locked {
-      opacity: 0.4;
-      cursor: not-allowed;
+      opacity: 0.5;
     }
 
-    .locked:hover {
-      transform: none;
-      background: rgba(0,0,0,0.6);
-    }
-
-    /* ===== MODAL ===== */
+    /* ===== GAME MODAL ===== */
     #gameWrapper {
       display: none;
       position: fixed;
@@ -103,7 +102,26 @@
       background: black;
     }
 
-    #closeBtn {
+    /* ===== VIDEO MODAL ===== */
+    #videoWrapper {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.9);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #videoWrapper iframe {
+      border: none;
+      border-radius: 20px;
+      width: 900px;
+      height: 500px;
+      background: black;
+    }
+
+    .closeBtn {
       position: absolute;
       top: 20px;
       right: 30px;
@@ -112,9 +130,10 @@
       font-size: 32px;
       border: none;
       cursor: pointer;
+      z-index: 10000;
     }
 
-    #closeBtn:hover {
+    .closeBtn:hover {
       color: #ff4d6d;
     }
 
@@ -139,17 +158,16 @@
   <h1>Dear Bebu,</h1>
   <h1>Welcome to the Gift Center 🎁</h1>
 
+  <!-- BUTTON GRID -->
   <div class="grid">
-    <div class="card">🎥 Memories Video</div>
-    <div class="card" onclick="window.location.href='crossword.html'">🧩 Crossword Puzzle</div>
+    <div class="card" onclick="openMemories()">🎥 Our Movie</div>
 
+    <div class="card" onclick="window.location.href='crossword.html'">
+      🧩 Crossword Puzzle
+    </div>
 
     <div class="card" onclick="openGame('aashma-runner.html')">
       ⏳❤️ A minute to Stop Sunil
-    </div>
-
-    <div class="card" onclick="openGame('secret-room.html')">
-      🔐 Secret Room
     </div>
 
     <div class="card locked" onclick="unlockLottery()">
@@ -157,17 +175,42 @@
     </div>
   </div>
 
-  <!-- MODAL -->
+  <!-- GAME MODAL -->
   <div id="gameWrapper">
-    <button id="closeBtn" onclick="closeGame()">×</button>
+    <button class="closeBtn" onclick="closeGame()">×</button>
     <iframe id="gameFrame"></iframe>
+  </div>
+
+  <!-- VIDEO MODAL -->
+  <div id="videoWrapper">
+    <button class="closeBtn" onclick="closeMemories()">×</button>
+    <iframe
+      id="memoriesVideo"
+      src=""
+      allow="autoplay; encrypted-media"
+      allowfullscreen>
+    </iframe>
   </div>
 
   <!-- COPYRIGHT -->
   <div id="copyright">© 2026 Thade Workshop</div>
 
   <script>
+    const YT_EMBED = "https://www.youtube.com/embed/bhDiDPXnCSI?autoplay=1";
+
+    function openMemories() {
+      closeGame();
+      document.getElementById("videoWrapper").style.display = "flex";
+      document.getElementById("memoriesVideo").src = YT_EMBED;
+    }
+
+    function closeMemories() {
+      document.getElementById("memoriesVideo").src = "";
+      document.getElementById("videoWrapper").style.display = "none";
+    }
+
     function openGame(src) {
+      closeMemories();
       document.getElementById("gameFrame").src = src;
       document.getElementById("gameWrapper").style.display = "flex";
     }
@@ -178,19 +221,25 @@
     }
 
     function openCatCorner() {
-    window.location.href = "cat-corner.html";
+      window.location.href = "cat-corner.html";
     }
-
 
     function unlockLottery() {
       const code = prompt("Enter the secret passcode 🔑");
-      if (code === "LOVE2024") {
+      if (code && code.trim().toUpperCase() === "LOVE2024") {
         alert("🎉 Lottery unlocked!");
         openGame("lottery.html");
       } else {
         alert("❌ Wrong code");
       }
     }
+
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") {
+        closeGame();
+        closeMemories();
+      }
+    });
   </script>
 
 </body>
