@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>🎰 THADE WORKSHOP LOTTERY CORNER 🎰</title>
+<title>🎰 THADE WORKSHOP LOTTERY 🎰</title>
 
 <style>
 body{
@@ -127,7 +127,7 @@ button{
 
 <div id="message"></div>
 
-<button id="revealBtn">And a Gift from Him</button>
+<button id="revealBtn">Reveal Your Gift 💄</button>
 
 <!-- AUDIO -->
 <audio id="romanticSound" src="romantic.wav" loop></audio>
@@ -193,7 +193,7 @@ function startSpinning(){
   spinning = true;
 
   spinSound.currentTime = 0;
-  spinSound.play().catch(()=>{});
+  spinSound.play();
 
   spinInterval = setInterval(()=>{
     slot1.src = randomSymbol();
@@ -214,7 +214,7 @@ function activateButton(){
   stopBtn.className="active";
 
   if(!romanticStarted){
-    romanticSound.play().catch(()=>{});
+    romanticSound.play();
     romanticStarted = true;
   }
 }
@@ -271,22 +271,23 @@ stopBtn.onclick=function(){
   stopSpinning();
 
   stopSound.currentTime = 0;
-  stopSound.play().catch(()=>{});
+  stopSound.play();
 
   if(state==="bonus"){
     slot1.src=scriptedResults.bonus[0];
     slot2.src=scriptedResults.bonus[1];
     slot3.src=scriptedResults.bonus[2];
-  
-    winSound.play().catch(()=>{});
-  
+
+    winSound.currentTime = 0;
+    winSound.play();
+
     document.getElementById("message").innerText=
     "Winner 💖 You won the lottery.\nThe prize is your loving and caring boyfriend for lifetime.";
-  
+
     setTimeout(()=>{
-      document.getElementById("revealBtn").style.display="inline-block";
+      revealBtn.style.display="inline-block";
     },5000);
-  
+
     return;
   }
 
@@ -298,7 +299,8 @@ stopBtn.onclick=function(){
 };
 
 /* START */
-startSpinning();
+startSpinning();      // spin immediately
+activateButton();     // button activates after load
 setTimeout(()=>activateButton(),2000);
 
 </script>
