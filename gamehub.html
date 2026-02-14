@@ -228,7 +228,7 @@
       const code = prompt("Enter the secret passcode 🔑");
       if (code && code.trim().toUpperCase() === "LOVE2024") {
         alert("🎉 Lottery unlocked!");
-        openGame("lottery.html");
+        window.open("lottery.html", "_blank");
       } else {
         alert("❌ Wrong code");
       }
