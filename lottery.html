@@ -1,140 +1,3 @@
-<!DOCTYPE html>
-<html>
-<head>
-<title>🎰 THADE WORKSHOP LOTTERY 🎰</title>
-
-<style>
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:radial-gradient(circle,#3a004d,#000);
-  color:white;
-  text-align:center;
-  overflow:hidden;
-}
-
-h1{
-  margin-top:30px;
-  font-size:38px;
-}
-
-.slot-container{
-  display:flex;
-  justify-content:center;
-  gap:40px;
-  margin-top:120px;
-}
-
-.slot{
-  width:170px;
-  height:170px;
-  background:rgba(255,255,255,0.08);
-  border-radius:20px;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.slot img{
-  width:140px;
-}
-
-#attempt{
-  margin-top:40px;
-  font-size:18px;
-  opacity:0.8;
-}
-
-button{
-  padding:12px 30px;
-  font-size:18px;
-  border:none;
-  border-radius:12px;
-  margin-top:20px;
-  cursor:pointer;
-}
-
-.active{
-  background:#ff4d6d;
-  color:white;
-}
-
-.inactive{
-  background:#552233;
-  color:#aaa;
-  cursor:not-allowed;
-}
-
-#message{
-  margin-top:20px;
-  font-size:20px;
-  min-height:60px;
-  white-space:pre-line;
-}
-
-#bonusBox{
-  position:absolute;
-  top:15%;
-  left:50%;
-  transform:translateX(-50%);
-  background:rgba(0,0,0,0.85);
-  padding:30px 40px;
-  border-radius:20px;
-  border:2px solid #ff4d6d;
-  width:60%;
-  display:none;
-  font-size:22px;
-  line-height:1.6;
-  white-space:pre-line;
-}
-
-#revealBtn{
-  margin-top:20px;
-  display:none;
-  background:#ff4d6d;
-  color:white;
-}
-
-#closeBtn{
-  position:absolute;
-  top:20px;
-  right:30px;
-  background:none;
-  border:none;
-  font-size:28px;
-  color:white;
-  cursor:pointer;
-}
-</style>
-</head>
-<body>
-
-<button id="closeBtn">×</button>
-
-<h1>Lucky Love Lottery 🎰</h1>
-
-<div id="bonusBox"></div>
-
-<div class="slot-container">
-  <div class="slot"><img id="slot1"></div>
-  <div class="slot"><img id="slot2"></div>
-  <div class="slot"><img id="slot3"></div>
-</div>
-
-<div id="attempt">Attempt 1 / 3</div>
-
-<button id="stopBtn" class="inactive" disabled>Stop</button>
-
-<div id="message"></div>
-
-<button id="revealBtn">Reveal Your Gift 💄</button>
-
-<!-- AUDIO -->
-<audio id="romanticSound" src="romantic.wav" loop></audio>
-<audio id="spinSound" src="spin.wav" loop></audio>
-<audio id="stopSound" src="stop.wav"></audio>
-<audio id="winSound" src="win.wav"></audio>
-
 <script>
 
 document.getElementById("closeBtn").onclick = function(){
@@ -169,7 +32,7 @@ let attempt = 1;
 let spinning = false;
 let spinInterval;
 let state = "normal";
-let romanticStarted = false;
+let audioUnlocked = false;
 
 const slot1 = document.getElementById("slot1");
 const slot2 = document.getElementById("slot2");
@@ -185,6 +48,29 @@ const winSound = document.getElementById("winSound");
 
 romanticSound.volume = 0.15;
 
+function unlockAudio(){
+  if(audioUnlocked) return;
+
+  romanticSound.play().catch(()=>{});
+  romanticSound.pause();
+  romanticSound.currentTime = 0;
+
+  spinSound.play().catch(()=>{});
+  spinSound.pause();
+  spinSound.currentTime = 0;
+
+  stopSound.play().catch(()=>{});
+  stopSound.pause();
+  stopSound.currentTime = 0;
+
+  winSound.play().catch(()=>{});
+  winSound.pause();
+  winSound.currentTime = 0;
+
+  romanticSound.play().catch(()=>{});
+  audioUnlocked = true;
+}
+
 function randomSymbol(){
   return symbols[Math.floor(Math.random()*symbols.length)];
 }
@@ -192,8 +78,10 @@ function randomSymbol(){
 function startSpinning(){
   spinning = true;
 
-  spinSound.currentTime = 0;
-  spinSound.play();
+  if(audioUnlocked){
+    spinSound.currentTime = 0;
+    spinSound.play().catch(()=>{});
+  }
 
   spinInterval = setInterval(()=>{
     slot1.src = randomSymbol();
@@ -205,6 +93,7 @@ function startSpinning(){
 function stopSpinning(){
   clearInterval(spinInterval);
   spinning = false;
+
   spinSound.pause();
   spinSound.currentTime = 0;
 }
@@ -212,11 +101,6 @@ function stopSpinning(){
 function activateButton(){
   stopBtn.disabled = false;
   stopBtn.className="active";
-
-  if(!romanticStarted){
-    romanticSound.play();
-    romanticStarted = true;
-  }
 }
 
 function deactivateButton(){
@@ -265,13 +149,15 @@ function showBonusFlow(){
 
 stopBtn.onclick=function(){
 
+  unlockAudio();   // 👈 THIS FIXES EVERYTHING
+
   if(!spinning) return;
 
   deactivateButton();
   stopSpinning();
 
   stopSound.currentTime = 0;
-  stopSound.play();
+  stopSound.play().catch(()=>{});
 
   if(state==="bonus"){
     slot1.src=scriptedResults.bonus[0];
@@ -279,7 +165,7 @@ stopBtn.onclick=function(){
     slot3.src=scriptedResults.bonus[2];
 
     winSound.currentTime = 0;
-    winSound.play();
+    winSound.play().catch(()=>{});
 
     document.getElementById("message").innerText=
     "Winner 💖 You won the lottery.\nThe prize is your loving and caring boyfriend for lifetime.";
@@ -298,11 +184,7 @@ stopBtn.onclick=function(){
   nextAttemptFlow();
 };
 
-/* START */
-startSpinning();      // spin immediately
-activateButton();     // button activates after load
-setTimeout(()=>activateButton(),2000);
+startSpinning();
+activateButton();
 
 </script>
-</body>
-</html>
