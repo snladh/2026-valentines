@@ -117,7 +117,7 @@ button{
 
 <button id="closeBtn">×</button>
 
-<h1>Lucky Love Lottery 🎰</h1>
+<h1>🎰 THADE WORKSHOP LOTTERY CORNER 🎰</h1>
 
 <div id="bonusBox"></div>
 
@@ -134,10 +134,8 @@ button{
 <div id="message"></div>
 
 <button id="revealBtn">And a Gift from Him</button>
-
 <br>
-
-<button id="backBtn">⬅ Back to Gift Center</button>
+<button id="backBtn">⬅ Back to GameHub</button>
 
 <!-- AUDIO -->
 <audio id="romanticSound" src="romantic.wav" loop></audio>
@@ -147,12 +145,11 @@ button{
 
 <script>
 
-/* CLOSE BUTTON — ALWAYS GO BACK */
+/* NAVIGATION */
 document.getElementById("closeBtn").onclick = function(){
   window.location.href = "gamehub.html";
 };
 
-/* VISIBLE BACK BUTTON */
 document.getElementById("backBtn").onclick = function(){
   window.location.href = "gamehub.html";
 };
@@ -162,12 +159,8 @@ document.getElementById("revealBtn").onclick = function(){
 };
 
 const symbols = [
-"heart.png",
-"spade.png",
-"diamond.png",
-"star.png",
-"ring.png",
-"crown.png"
+"heart.png","spade.png","diamond.png",
+"star.png","ring.png","crown.png"
 ];
 
 const scriptedResults = {
@@ -203,7 +196,6 @@ function randomSymbol(){
 
 function startSpinning(){
   spinning = true;
-
   spinSound.currentTime = 0;
   spinSound.play();
 
@@ -224,7 +216,6 @@ function stopSpinning(){
 function activateButton(){
   stopBtn.disabled = false;
   stopBtn.className="active";
-
   if(!romanticStarted){
     romanticSound.play();
     romanticStarted = true;
@@ -238,41 +229,49 @@ function deactivateButton(){
 
 function nextAttemptFlow(){
   attempt++;
-
   if(attempt<=3){
     document.getElementById("attempt").innerText="Attempt "+attempt+" / 3";
-
     setTimeout(()=>{
       startSpinning();
       setTimeout(()=>activateButton(),2000);
     },2000);
-  }
-  else{
+  } else {
     showBonusFlow();
   }
 }
 
+/* ✅ CLEAN BONUS TIMING */
 function showBonusFlow(){
 
   bonusBox.style.display="block";
+
+  // 1️⃣ 6 seconds
   bonusBox.innerText="Attempts over. Please try again tomorrow.";
 
   setTimeout(()=>{
+
+    // 2️⃣ 8 seconds
     bonusBox.innerText=
-    "But you have been such a nice, caring and loving girlfriend...\nYou deserve all the love and happiness";
-  },12000);
+    "You have been such a nice, caring and loving girlfriend...\nYou deserve all the love and happiness";
 
-  setTimeout(()=>{
-    bonusBox.innerText="Here is a bonus attempt";
-  },19000);
+    setTimeout(()=>{
 
-  setTimeout(()=>{
-    bonusBox.style.display="none";
-    document.getElementById("attempt").innerText="Attempt: Love / Everything";
-    state="bonus";
-    startSpinning();
-    setTimeout(()=>activateButton(),2000);
-  },24000);
+      // 3️⃣ 3 seconds
+      bonusBox.innerText="Here is a bonus attempt";
+
+      setTimeout(()=>{
+
+        bonusBox.style.display="none";
+        document.getElementById("attempt").innerText="Attempt: Love / Everything";
+        state="bonus";
+        startSpinning();
+        setTimeout(()=>activateButton(),2000);
+
+      },3000);
+
+    },8000);
+
+  },6000);
 }
 
 stopBtn.onclick=function(){
@@ -310,7 +309,6 @@ stopBtn.onclick=function(){
   nextAttemptFlow();
 };
 
-/* START */
 startSpinning();
 setTimeout(()=>activateButton(),2000);
 
