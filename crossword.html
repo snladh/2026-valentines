@@ -28,7 +28,46 @@
 
   .panel{width:360px;background:rgba(255,255,255,.05);border-radius:18px;padding:20px;overflow:auto}
   .hint{background:rgba(0,0,0,.4);border-radius:14px;padding:12px;margin-bottom:12px;font-size:14px}
-  #giftBox{display:none;margin-top:16px;padding:16px;border-radius:16px;background:rgba(80,200,120,.2)}
+
+  /* PASSWORD REVEAL BOX */
+  #giftBox{
+    display:none;
+    margin-top:16px;
+    padding:24px;
+    border-radius:18px;
+    background:linear-gradient(135deg, rgba(80,200,120,.2), rgba(255,100,150,.15));
+    text-align:center;
+    animation:fadeIn 0.6s ease forwards;
+  }
+
+  #giftBox h3{
+    font-size:22px;
+    margin-bottom:10px;
+  }
+
+  #passwordText{
+    font-size:30px;
+    font-weight:800;
+    letter-spacing:3px;
+    margin:12px 0;
+    color:#50c878;
+  }
+
+  #nextBtn{
+    margin-top:18px;
+    padding:10px 20px;
+    border:none;
+    border-radius:20px;
+    cursor:pointer;
+    background:#fff;
+    color:#000;
+    font-weight:600;
+  }
+
+  @keyframes fadeIn{
+    from{opacity:0;transform:translateY(10px)}
+    to{opacity:1;transform:translateY(0)}
+  }
 </style>
 </head>
 
@@ -54,87 +93,50 @@
     <div class="hint"><b>9 (V).</b> My lucky number (5)</div>
     <div class="hint"><b>10 (H).</b> A family member (4)</div>
 
+    <!-- PASSWORD REVEAL -->
     <div id="giftBox">
-    <div style="font-size:20px; font-weight:700; margin-bottom:8px;">
-        🎉 Congratulations!!
-    </div>
-
-    <div style="font-size:16px; margin-bottom:16px;">
-        You got <b>everything</b> correct 💖<br>
-        You win a gift from your boyfriend.
-    </div>
-
-    <button
-        style="padding:10px 18px; border-radius:18px; border:none; cursor:pointer;"
-        onclick="window.open('gift2.html','_blank')"
-    >
-        Click here to claim 💝
-    </button>
-
-    <br><br>
-
-    <button onclick="location.href='gamehub.html'">
-        Back to GameHub
-    </button>
+      <h3>🎉 You solved everything!</h3>
+      <div>You have unlocked the password:</div>
+      <div id="passwordText">Love2024</div>
+      <div style="opacity:.7;font-size:14px;margin-top:6px;">
+        Use this to unlock the Lottery Game 🎰
+      </div>
+      <button id="nextBtn" onclick="location.href='gamehub.html'">
+        Continue →
+      </button>
     </div>
 
 <script>
-  // GRID SIZE (matches your layout)
-  const ROWS = 17;  // 0..16
-  const COLS = 12;  // 0..11
+  const ROWS = 17;
+  const COLS = 12;
 
   const solutions = new Map();
-
   function set(r,c,ch){ solutions.set(`${r},${c}`, ch); }
 
-  // ===== EXACT PLACEMENTS FROM YOUR GRID =====
-
-  // 4) 3347340712 vertical on far right (col 11), rows 0..9
   "3347340712".split("").forEach((ch,i)=> set(i, 9, ch));
-
-  // 3) BLACK vertical at col 0, rows 3..7  (B L A C K)
   "BLACK".split("").forEach((ch,i)=> set(3+i, 0, ch));
-
-  // 2) SUJANA vertical at col 1, rows 4..9  (S U J A N A)
   "SUJANA".split("").forEach((ch,i)=> set(4+i, 1, ch));
-
-  // 7) AUGUST2024 horizontal at row 5, col 0..9
-  // shares A with BLACK at (5,0) exactly
   "AUGUST2024".split("").forEach((ch,i)=> set(5, 0+i, ch));
-
-  // 6) TULSI vertical at col 5, rows 5..9 (T U L S I)
   "TULSI".split("").forEach((ch,i)=> set(5+i, 5, ch));
-
-  // 10) LUNA horizontal at row 6, col 6..9 (does NOT touch TULSI col 5)
   "LUNA".split("").forEach((ch,i)=> set(6, 4+i, ch));
-
-  // 8) RONALDO vertical at col 2, rows 8..14
   "RONALDO".split("").forEach((ch,i)=> set(8+i, 2, ch));
-
-  // 1) AUBURN horizontal at row 11, col 2..7 (crosses RONALDO at A)
   "AUBURN".split("").forEach((ch,i)=> set(11, 2+i, ch));
-
-  // 5) DECEMBER horizontal at row 13, col 2..9 (crosses RONALDO at D)
   "DECEMBER".split("").forEach((ch,i)=> set(13, 2+i, ch));
-
-  // 9) SEVEN vertical at col 3, rows 12..16
   "SEVEN".split("").forEach((ch,i)=> set(12+i, 3, ch));
 
-  // ===== NUMBER LABELS (start cell of each word) =====
   const numbers = {
-    "11,2": 1,  // AUBURN
-    "4,1":  2,  // SUJANA
-    "3,0":  3,  // BLACK
-    "0,9":  4,  // 3347340712
-    "13,2": 5,  // DECEMBER
-    "5,5":  6,  // TULSI
-    "5,0":  7,  // AUGUST2024
-    "8,2":  8,  // RONALDO
-    "12,3": 9,  // SEVEN
-    "6,4":  10  // LUNA
+    "11,2": 1,
+    "4,1": 2,
+    "3,0": 3,
+    "0,9": 4,
+    "13,2": 5,
+    "5,5": 6,
+    "5,0": 7,
+    "8,2": 8,
+    "12,3": 9,
+    "6,4": 10
   };
 
-  // ===== RENDER =====
   const grid = document.getElementById("grid");
   const inputs = [];
 
@@ -157,13 +159,11 @@
 
         const sol = solutions.get(key);
         const isDigitCell = /[0-9]/.test(sol);
-
         input.inputMode = isDigitCell ? "numeric" : "text";
 
         input.oninput = () => {
           let v = (input.value || "").toUpperCase().slice(0,1);
 
-          // keep digit cells clean
           if(isDigitCell && v && !/[0-9]/.test(v)) v = "";
           if(!isDigitCell && v && /[0-9]/.test(v)) v = "";
 
@@ -173,7 +173,9 @@
           cell.classList.toggle("incorrect", v && v !== sol);
 
           if(inputs.every(i => i.input.value === i.solution)){
-            document.getElementById("giftBox").style.display = "block";
+            setTimeout(()=>{
+              document.getElementById("giftBox").style.display = "block";
+            }, 800);
           }
         };
 
