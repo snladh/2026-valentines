@@ -119,15 +119,9 @@ button{
 
 <button id="revealBtn">Reveal Your Sephora Gift Card 💄</button>
 
-<!-- AUDIO -->
-<audio id="romanticSound" src="romantic.wav" loop preload="auto"></audio>
-<audio id="spinSound" src="spin.wav" loop preload="auto"></audio>
-<audio id="stopSound" src="stop.wav" preload="auto"></audio>
-<audio id="winSound" src="win.wav" preload="auto"></audio>
-
 <script>
 
-/* CLOSE + REVEAL */
+/* CLOSE BUTTON */
 document.getElementById("closeBtn").onclick = function(){
   if(window.parent && window.parent.closeGame){
     window.parent.closeGame();
@@ -140,32 +134,6 @@ document.getElementById("revealBtn").onclick = function(){
   window.open("https://eGft.in/p~eHfO0iGRXWSCq","_blank");
 };
 
-/* AUDIO SETUP */
-const romanticSound = document.getElementById("romanticSound");
-const spinSound = document.getElementById("spinSound");
-const stopSound = document.getElementById("stopSound");
-const winSound = document.getElementById("winSound");
-
-romanticSound.volume = 0.15;
-
-let audioReady = false;
-
-// Unlock audio on first user interaction
-function unlockAudio(){
-  if(audioReady) return;
-
-  audioReady = true;
-
-  romanticSound.play().catch(()=>{});
-
-  if(spinning){
-    spinSound.play().catch(()=>{});
-  }
-}
-
-document.addEventListener("click", unlockAudio, { once:true });
-
-/* GAME LOGIC */
 const symbols = [
 "heart.png",
 "spade.png",
@@ -201,11 +169,6 @@ function randomSymbol(){
 function startSpinning(){
   spinning = true;
 
-  if(audioReady){
-    spinSound.currentTime = 0;
-    spinSound.play().catch(()=>{});
-  }
-
   spinInterval = setInterval(()=>{
     slot1.src = randomSymbol();
     slot2.src = randomSymbol();
@@ -216,9 +179,6 @@ function startSpinning(){
 function stopSpinning(){
   clearInterval(spinInterval);
   spinning = false;
-
-  spinSound.pause();
-  spinSound.currentTime = 0;
 }
 
 function activateButton(){
@@ -277,20 +237,10 @@ stopBtn.onclick=function(){
   deactivateButton();
   stopSpinning();
 
-  if(audioReady){
-    stopSound.currentTime = 0;
-    stopSound.play().catch(()=>{});
-  }
-
   if(state==="bonus"){
     slot1.src=scriptedResults.bonus[0];
     slot2.src=scriptedResults.bonus[1];
     slot3.src=scriptedResults.bonus[2];
-
-    if(audioReady){
-      winSound.currentTime = 0;
-      winSound.play().catch(()=>{});
-    }
 
     document.getElementById("message").innerText=
     "Winner 💖 You won the lottery.\nThe prize is your loving and caring boyfriend for lifetime.";
@@ -309,7 +259,7 @@ stopBtn.onclick=function(){
   nextAttemptFlow();
 };
 
-/* START VISUAL SPIN */
+/* START */
 startSpinning();
 setTimeout(()=>activateButton(),2000);
 
