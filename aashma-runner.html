@@ -110,8 +110,8 @@ button{
 /* ========== CONFIG ========== */
 const GAME_TIME_SECONDS = 60;
 const SCENE_DURATION = 5500;
+const GIFT_IMAGE_URL = "starbucks.jpg";
 
-/* 🔥 UPDATED HERE — REPLACED gift.html WITH YOUR LINK */
 const CINEMA_SCENES = [
   {
     img:"aashma.jpg",
@@ -130,14 +130,13 @@ const CINEMA_SCENES = [
     text:
       "Because you followed your heart…<br>" +
       "Your king has a gift for you 💖<br>" +
-      "<button onclick='window.open(\"https://YOUR-LINK-HERE.com\", \"_blank\")'>" +
+      "<button onclick='window.open(\"https://www.giftly.com/gift/landing/qbH9yaD3/recp_lqbyhkkvlpaewrnceruppavgv?spec=new_gift_email\", \"_blank\")'>" +
       "Click here to get your gift" +
       "</button>"
   }
 ];
 
-/* ========== GAME LOGIC BELOW (UNCHANGED) ========== */
-
+/* ========== GAME ========== */
 const canvas=document.getElementById("game");
 const ctx=canvas.getContext("2d");
 
@@ -150,8 +149,10 @@ let sceneIndex=0;
 const player={x:120,y:360,vy:0,grounded:true};
 const sunil={x:700,y:360};
 const gravity=0.8, jumpForce=-14;
+
 let obstacles=[];
 
+/* INPUT */
 document.addEventListener("keydown",e=>{
  if(e.code==="Space"){
    if(gameState==="start") startGame();
@@ -167,12 +168,18 @@ function startGame(){
  gameState="play";
 }
 
+/* UPDATE */
 function update(){
  if(gameState!=="play") return;
+
  frame++;
  if(frame%60===0) timer--;
- if(timer<=0){ startReunion(); }
 
+ if(timer<=0){
+   startReunion();
+ }
+
+ // physics
  player.vy+=gravity;
  player.y+=player.vy;
  if(player.y>=360){
@@ -181,13 +188,16 @@ function update(){
    player.grounded=true;
  }
 
+ // spawn boulders
  if(frame%120===0){
    obstacles.push({x:canvas.width+40,y:388,w:18,h:24});
  }
 
+ // move boulders
  obstacles.forEach(o=>o.x-=4);
  obstacles=obstacles.filter(o=>o.x>-50);
 
+ // collision
  obstacles.forEach(o=>{
    if(player.x<o.x+o.w &&
       player.x+30>o.x &&
@@ -198,17 +208,21 @@ function update(){
  });
 }
 
+/* DRAW CHARACTERS */
 function drawGirl(x,y){
+ // hair
  ctx.fillStyle="#d6336c";
  ctx.beginPath();
  ctx.arc(x+15,y-12,9,Math.PI,Math.PI*2);
  ctx.fill();
 
+ // head
  ctx.fillStyle="#ffccd5";
  ctx.beginPath();
  ctx.arc(x+15,y-12,10,0,Math.PI*2);
  ctx.fill();
 
+ // dress
  ctx.fillStyle="#ff6b9c";
  ctx.beginPath();
  ctx.moveTo(x+15,y+5);
@@ -217,6 +231,7 @@ function drawGirl(x,y){
  ctx.closePath();
  ctx.fill();
 
+ // legs
  ctx.strokeStyle="#ffccd5";
  ctx.beginPath();
  ctx.moveTo(x+8,y+45);
@@ -225,6 +240,7 @@ function drawGirl(x,y){
  ctx.lineTo(x+22,y+60);
  ctx.stroke();
 
+ // name
  ctx.fillStyle="white";
  ctx.font="14px Arial";
  ctx.fillText("Aashma",x-4,y-32);
@@ -251,12 +267,18 @@ function drawGuy(x,y){
  ctx.fillText("Sunil",x,y-32);
 }
 
+/* DRAW */
 function draw(){
  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+ // ground
  ctx.fillStyle="#222";
  ctx.fillRect(0,400,canvas.width,100);
+
+ // player
  drawGirl(player.x,player.y);
 
+ // obstacles
  ctx.fillStyle="#555";
  obstacles.forEach(o=>{
    ctx.beginPath();
@@ -264,13 +286,18 @@ function draw(){
    ctx.fill();
  });
 
- if(reunion){ drawGuy(sunil.x,sunil.y); }
+ // sunil
+ if(reunion){
+   drawGuy(sunil.x,sunil.y);
+ }
 
+ // timer
  ctx.fillStyle="white";
  ctx.font="16px Arial";
  ctx.fillText(`Time: ${timer}s`,20,30);
 }
 
+/* LOOP */
 function loop(){
  update();
  draw();
@@ -278,6 +305,7 @@ function loop(){
 }
 loop();
 
+/* ENDING */
 function lose(){
  gameState="lose";
  document.getElementById("loseScreen").classList.remove("hidden");
@@ -319,7 +347,9 @@ function playScene(){
  sceneIndex++;
  setTimeout(playScene,SCENE_DURATION);
 }
+
 </script>
 
 </body>
 </html>
+
